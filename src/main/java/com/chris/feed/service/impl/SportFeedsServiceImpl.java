@@ -1,5 +1,6 @@
 package com.chris.feed.service.impl;
 
+import com.chris.feed.dto.LiveScore;
 import com.chris.feed.dto.LiveStatus;
 import com.chris.feed.dto.Sport;
 import com.chris.feed.dto.TypeStatus;
@@ -23,23 +24,25 @@ public class SportFeedsServiceImpl implements SportFeedsService {
     private final ObjectMapper mapper;
 
     @Override
-    public List<Sport> getSportFeeds(List<TypeStatus> typeStatuses, LiveStatus liveStatus) {
-        return ((typeStatuses != null && typeStatuses.size() != 0) ? sportFeedRepo.findByStatusIn(typeStatuses.stream()
-                                                                                                              .map(TypeStatus::getTypeStatus)
-                                                                                                              .collect(Collectors.toList()))
-                                                                   : sportFeedRepo.findAll())
-            .stream()
-            .filter(t -> liveStatus != null ? checkLiveStatus(t.getLiveDetails(), liveStatus) : Boolean.TRUE)
-            .map(m -> {
-                try {
-                    return mapper.readValue(m.getRawValue(), Sport.class);
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-                }
-                return Sport.builder().build();
-            }).
+    public LiveScore getSportFeeds(List<TypeStatus> typeStatuses, LiveStatus liveStatus) {
+        return LiveScore.builder()
+                        .livescore(((typeStatuses != null && typeStatuses.size() != 0) ? sportFeedRepo.findByStatusIn(typeStatuses.stream()
+                                                                                                                                  .map(TypeStatus::getTypeStatus)
+                                                                                                                                  .collect(Collectors.toList()))
+                                                                                       : sportFeedRepo.findAll())
+                                       .stream()
+                                       .filter(t -> liveStatus != null ? checkLiveStatus(t.getLiveDetails(), liveStatus) : Boolean.TRUE)
+                                       .map(m -> {
+                                           try {
+                                               return mapper.readValue(m.getRawValue(), Sport.class);
+                                           } catch (JsonProcessingException e) {
+                                               e.printStackTrace();
+                                           }
+                                           return Sport.builder().build();
+                                       }).
 
-                collect(Collectors.toList());
+                                           collect(Collectors.toList()))
+                        .build();
     }
 
 

@@ -14,6 +14,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class Sport implements Serializable {
 
+    private static final long serialVersionUID = -805389348276687259L;
     private AwayScore awayScore;
     private AwayTeam awayTeam;
     private String competition;

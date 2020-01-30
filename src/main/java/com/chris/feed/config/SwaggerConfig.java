@@ -27,7 +27,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-            .title("Sport Feed Api")
+            .title("Live Score Api")
             .build();
     }
 
